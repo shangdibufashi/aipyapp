@@ -90,9 +90,9 @@ Write-Host "Version: $VERSION"
 # --onefile `
 # --onefile-tempdir-spec="{CACHE_DIR}/{PRODUCT}" `
 # --plugin-enable=pywebview `
+# --lto=yes `
 python -m nuitka `
 --jobs=16 `
---lto=yes `
 --remove-output `
 --assume-yes-for-downloads `
 --show-scons `
