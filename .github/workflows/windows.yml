@@ -128,7 +128,7 @@ jobs:
           --follow-imports aipy.py
 
           ls -alh aipyapp.dist/
-          du -h -d 2 aipyapp.dist/
+          du -h -d 2 aipy.dist/
 
       - name: Create installer
         shell: pwsh
