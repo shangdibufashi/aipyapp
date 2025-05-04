@@ -132,9 +132,6 @@ jobs:
       - name: Create installer
         shell: pwsh
         run: |
-          set -x
-          pwd
-          ls -alh
           Write-Host "VERSION=$VERSION"
           (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
           
