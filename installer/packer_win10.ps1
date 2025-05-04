@@ -99,7 +99,7 @@ python -m nuitka `
 --windows-disable-console `
 --standalone  `
 --python-flag=no_site,no_docstrings,isolated `
---windows-icon-from-ico=res/aipy.ico  `
+--windows-icon-from-ico=aipyapp/res/aipy.ico  `
 --include-package="certifi"  `
 --include-package="PIL"  `
 --include-package="websockets"  `
@@ -127,7 +127,7 @@ python -m nuitka `
 --nofollow-import-to=nose `
 --macos-create-app-bundle `
 `
---include-data-dir=./res=res `
+--include-data-dir=./res=aipyapp/res `
 --include-data-dir=./python=C:\Python313_clean `
 `
 --macos-app-version=${VERSION} `
