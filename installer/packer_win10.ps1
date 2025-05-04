@@ -25,7 +25,7 @@ $env:ENVIRON = "dev"
 $env:ENVIRON_LOG = "all"
 $env:PATH = "C:\Python313\;C:\Python313\Scripts\;" + $env:PATH
 
-python -m pip install -r ../installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
+python -m pip install -r installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
 # 改变工作目录到脚本所在目录
 Set-Location -Path $CDIR
