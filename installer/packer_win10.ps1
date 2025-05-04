@@ -23,7 +23,7 @@ Write-Host "Current Directory: $CDIR"
 $env:CLCACHE_DIR = "C:\ccache"
 $env:ENVIRON = "dev"
 $env:ENVIRON_LOG = "all"
-$env:PATH = "C:\Python313\;" + $env:PATH
+$env:PATH = "C:\Python313\;C:\Python313\Scripts\;" + $env:PATH
 
 python -m pip install -r ../installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
