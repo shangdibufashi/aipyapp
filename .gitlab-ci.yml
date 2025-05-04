@@ -14,9 +14,7 @@ docker-win10:
   script:
     - $VERSION = "${env:CI_PIPELINE_ID}"
     - Write-Host "VERSION=$VERSION"
-    - (Get-Content -path win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
-    - (Get-Content -path engine.py) -replace '__VERSION__', $VERSION | Set-Content -Path engine.py
-    - (Get-Content -path core/workers/workers.py) -replace 'handlers.factory', 'handlers.factory_engine' | Set-Content -Path core/workers/workers.py
+    - (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
     - ./installer/packer_win10.ps1
 
 

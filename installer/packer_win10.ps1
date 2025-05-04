@@ -26,7 +26,7 @@ $env:ENVIRON_LOG = "all"
 # $env:PATH += ";C:\Users\Docker\AppData\Local\Programs\Python\Python310\"
 $env:PATH = "C:\Users\Docker\AppData\Local\Programs\Python\Python310\;" + $env:PATH
 
-python -m pip install -r requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
+python -m pip install -r ../installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
 # 改变工作目录到脚本所在目录
 Set-Location -Path $CDIR
@@ -152,7 +152,7 @@ Set-Location -Path $CDIR
 Write-Host "Current Directory: $CDIR"
 
 Write-Host "Creating installer from script."
-iscc /F"installer" "installer/win/InnoSetup/WindowsInnoSetup.iss"
+iscc /F"installer" "WindowsInnoSetup.iss"
 
 Write-Host "uploading installer"
 Write-Host "$env:CI_COMMIT_TITLE"
