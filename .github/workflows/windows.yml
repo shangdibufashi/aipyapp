@@ -1,0 +1,228 @@
+name: Windows Build
+on:
+  push:
+    branches:
+      # - test
+      - master
+      - dev
+      - releases
+      - 'release-[0-9]+.*'
+    tags:
+      - '[0-9]+.*'
+  pull_request:
+    branches:
+      - dev
+      - releases
+      - 'release-[0-9]+.*'
+  workflow_dispatch:
+
+env:
+  publish_pre_dev_labels: '[]'
+
+jobs:
+  win-build:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [release]
+        python_version: ['3.13']
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+
+      - name: Install dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          location: C:\msys2
+          update: true
+          msystem: MINGW64
+          install: |
+            git
+            intltool
+            zip
+            unzip
+            openssh
+            wget
+          pacboy: |
+            cc:p
+            pkgconf:p
+            cmake:p
+            make:p
+            autotools:p
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python_version }}
+          cache: 'pip'
+      - name: Install Python dependencies
+        run: |
+          set -x
+          echo "Python_ROOT_DIR=$Python_ROOT_DIR"
+          ls -alh "$Python_ROOT_DIR"
+          cp -rf "$Python_ROOT_DIR" python
+          "$Python_ROOT_DIR"/python.exe -c "import platform; print('Python Version:', platform.python_version()); print('Build:', platform.python_build()); print('Compiler:', platform.python_compiler())"
+          "$Python_ROOT_DIR"/python.exe --version
+          "$Python_ROOT_DIR"/python.exe -m pip install -r installer/requirements.txt
+
+
+      - name: build
+        run: |
+          set -ex
+          export VERSION="1.28.0"
+          echo "VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
+          
+          python -m nuitka \
+          --jobs=16 \
+          --remove-output \
+          --assume-yes-for-downloads \
+          --show-scons \
+          --disable-console \
+          --windows-disable-console \
+          --standalone  \
+          --python-flag=no_site,no_docstrings,isolated \
+          --windows-icon-from-ico=aipyapp/res/aipy.ico  \
+          --include-package="certifi"  \
+          --include-package="PIL"  \
+          --show-progress \
+          \
+          --nofollow-import-to=astropy \
+          --nofollow-import-to=sympy \
+          --nofollow-import-to=dask \
+          \
+          --nofollow-import-to=ipywidgets \
+          --nofollow-import-to=ipython_genutils \
+          --nofollow-import-to=ipykernel \
+          \
+          --nofollow-import-to=IPython \
+          --nofollow-import-to=pexpect \
+          --nofollow-import-to=nbformat \
+          \
+          --nofollow-import-to=numpydoc \
+          --nofollow-import-to=matplotlib \
+          --nofollow-import-to=pandas \
+          \
+          --nofollow-import-to=pytest \
+          --noinclude-pytest-mode=nofollow \
+          --noinclude-setuptools-mode=nofollow \
+          --nofollow-import-to=nose \
+          \
+          --include-data-dir=./aipyapp/res=./aipyapp/res \
+          --include-data-dir=./python=./python \
+          \
+          --company-name='knownsec.inc' \
+          --product-name='knownsec' \
+          --copyright='Copyright 2025 knownsec' \
+          --trademarks='knownsec' \
+          --product-version=${VERSION} \
+          --file-version=${VERSION} \
+          \
+          --follow-imports aipy.py
+
+      - name: Create installer
+        shell: pwsh
+        run: |
+          set -x
+          pwd
+          ls -alh
+          Write-Host "VERSION=$VERSION"
+          (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
+          
+          echo "Installing Inno Setup."
+          choco install innosetup
+          echo "Setup file:"
+          type "WindowsInnoSetup.iss"
+          echo "Creating installer from script."
+          iscc /F"installer" "WindowsInnoSetup.iss"
+
+
+      - name: Prepare artifact name
+        run: |
+          set -x
+          pwd
+          ls -alh
+
+          if [ '${{github.ref_type}}' == 'tag' ]; then
+            ARTIFACT_NAME="aipy_${REF_NAME_FILTERED}_win64_${{matrix.build_type}}"
+          else
+            echo "Getting aipy version."
+            echo "Version is '$VERSION'."
+            FILTERED_VERSION="$(echo "$VERSION" | sed 's/[^A-z0-9_.-]//g')"
+            ARTIFACT_NAME="aipy_${REF_NAME_FILTERED}_${FILTERED_VERSION}_win64_${{matrix.build_type}}"
+          fi
+          echo "Artifact name is '$ARTIFACT_NAME'."
+
+          echo "Recording artifact name."
+          echo "ARTIFACT_NAME=$ARTIFACT_NAME" >> "$(cygpath -u $GITHUB_ENV)"
+          echo "Recording aipy version."
+          echo "RT_VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
+
+          echo "Renaming artifact."
+          mv './build/${{matrix.build_type}}' "./build/$ARTIFACT_NAME"
+          if [ -e './build/installer.exe' ]; then
+            echo "Renaming installer."
+            mv './build/installer.exe' "./build/$ARTIFACT_NAME.exe"
+          fi
+
+      - name: Create ZIP archive
+        working-directory: ./build
+        run: |
+          set -x
+          pwd
+          ls -alh
+          echo "Zipping artifact."
+          zip -R "%ARTIFACT_NAME%.zip" "./%ARTIFACT_NAME%"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.ARTIFACT_NAME}}
+          path: build\${{env.ARTIFACT_NAME}}
+
+      - name: Upload installer
+        if: ${{matrix.build_type == 'release'}}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.ARTIFACT_NAME}}.exe
+          path: build\${{env.ARTIFACT_NAME}}.exe
+
+      - name: Prepare for publishing
+        if: ${{github.ref_type == 'tag' || github.ref_name == 'dev'}}
+        run: |
+          echo "Setting publish name."
+          PUBLISH_NAME="aipy_${REF_NAME_FILTERED}_win64_${{matrix.build_type}}"
+          echo "Publish name is '$PUBLISH_NAME'."
+          if [ "$ARTIFACT_NAME" != "$PUBLISH_NAME" ]; then
+            echo "Renaming ZIP file."
+            cp "build/$ARTIFACT_NAME.zip" "build/$PUBLISH_NAME.zip"
+            if [ -e "./build/$ARTIFACT_NAME.exe" ]; then
+              echo "Renaming installer."
+              mv "./build/$ARTIFACT_NAME.exe" "./build/$PUBLISH_NAME.exe"
+            fi
+          fi
+          echo "Creating version file."
+
+          echo "Recording publish name."
+          echo "PUBLISH_NAME=$PUBLISH_NAME" >> "$(cygpath -u $GITHUB_ENV)"
+
+      - name: Publish artifacts
+        uses: softprops/action-gh-release@v2
+        if: ${{github.ref_type == 'tag' || github.ref_name == 'dev'}}
+        with:
+          tag_name: nightly-github-actions
+          files: |
+            build/${{env.PUBLISH_NAME}}.zip
+
+      - name: Publish installer
+        uses: softprops/action-gh-release@v2
+        if: ${{matrix.build_type == 'release'}}
+        with:
+          tag_name: nightly-github-actions
+          files: build/${{env.PUBLISH_NAME}}.exe

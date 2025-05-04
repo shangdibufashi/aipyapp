@@ -1,6 +1,16 @@
+# coding: utf-8
 import os
 import sys
-
+from pathlib import Path
+config_dir = Path.home() / f".aipy_packages"
+config_dir.mkdir(parents=True, exist_ok=True)
+sys.path.insert(1, str(config_dir.resolve()))
+os.environ['pip_packages'] = str(config_dir.resolve())
+pwd = os.path.dirname((os.path.abspath(__file__)))
+ext = '.exe' if sys.platform == 'win32' else ''
+pythonexe = Path(pwd) / 'python' / f'python{ext}'
+if pythonexe.exists():
+    os.environ['pythonexe'] = str(pythonexe)
 from loguru import logger
 
 from aipyapp.gui.main import main as aipy_main
@@ -41,11 +51,35 @@ def parse_args():
     logger.level(args.level)
     return args
 
+def env_pkg_debug():
+    print(f"pip package: {str(config_dir.resolve())}")
+    print(f"paths: {sys.path}")
+    print('pythonexe', os.environ.get('pythonexe', ''))
+    print('pip_packages', os.environ.get('pip_packages', ''))
+    cmd = [
+        os.environ.get('pythonexe', ''),
+        '-m',
+        'pip',
+        'install',
+        '-q',
+        '--target',
+        os.environ.get('pip_packages', ''),
+        'tqdm', 
+    ]
+    
+    import subprocess
+    print(" ".join(cmd))
+    cp = subprocess.run(cmd)
+    assert cp.returncode == 0
+    from tqdm import tqdm
+
 def mainw():
     args = parse_args()
     if not args.debug:
         sys.stdout = Logger()
         sys.stderr = Logger()
+    else:
+        env_pkg_debug()
     aipy_main(args)
 
 if __name__ == '__main__':

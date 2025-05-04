@@ -40,7 +40,8 @@ if (Test-Path $folderPath) {
     Remove-Item $folderPath -Recurse -Force
 }
 Get-ChildItem -Path . -Filter *.exe | Remove-Item -Force
-
+copy -r C:\Python313_clean .
+mv Python313_clean python
 function Convert-Number {
     param (
         [string]$num
@@ -102,7 +103,6 @@ python -m nuitka `
 --windows-icon-from-ico=aipyapp/res/aipy.ico  `
 --include-package="certifi"  `
 --include-package="PIL"  `
---include-package="websockets"  `
 --show-progress `
 `
 --nofollow-import-to=astropy `
@@ -125,15 +125,9 @@ python -m nuitka `
 --noinclude-pytest-mode=nofollow `
 --noinclude-setuptools-mode=nofollow `
 --nofollow-import-to=nose `
---macos-create-app-bundle `
 `
---include-data-dir=./res=aipyapp/res `
---include-data-dir=./python=C:\Python313_clean `
-`
---macos-app-version=${VERSION} `
---macos-signed-app-name='com.knownsec.aipyapp' `
---macos-app-name=aipyapp `
---macos-app-mode=gui `
+--include-data-dir=./aipyapp/res=./aipyapp/res `
+--include-data-dir=./python=./python `
 `
 --company-name='knownsec.inc' `
 --product-name='knownsec' `
@@ -142,7 +136,7 @@ python -m nuitka `
 --product-version=${VERSION} `
 --file-version=${VERSION} `
 `
---follow-imports aipyapp.py
+--follow-imports aipy.py
 
 #  使用Chocolatey包管理器安装Inno Setup
 #  choco install innosetup

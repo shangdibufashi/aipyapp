@@ -3,7 +3,7 @@
 import sys
 import subprocess
 from abc import ABC, abstractmethod
-
+import os
 from loguru import logger
 
 class BaseRuntime(ABC):
@@ -22,15 +22,20 @@ class BaseRuntime(ABC):
         packages = list(set(packages) - self.packages)
         if not packages:
             return True
-        
-        cmd = [sys.executable, "-m", "pip", "install"]
+        executable = os.environ.get('pythonexe', sys.executable)
+        cmd = [executable, "-m", "pip", "install"]
         if upgrade:
             cmd.append("--upgrade")
         if quiet:
             cmd.append("-q")
+        pip_packages = os.environ.get('pip_packages', None)
+        if pip_packages:
+            cmd.append("--target")
+            cmd.append(pip_packages)
         cmd.extend(packages)
 
         try:
+            self.log.info(f'ensure_packages {" ".join(cmd)}')
             subprocess.check_call(cmd)
             self.packages.update(packages)
             return True
