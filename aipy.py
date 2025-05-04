@@ -3,8 +3,8 @@ import sys
 
 from loguru import logger
 
-from .gui.main import main as aipy_main
-from .aipy.config import CONFIG_DIR
+from aipyapp.gui.main import main as aipy_main
+from aipyapp.aipy.config import CONFIG_DIR
 
 logger.remove()
 logger.add(CONFIG_DIR / "aipyapp.log", format="{time:HH:mm:ss} | {level} | {message} | {extra}", level='INFO')
