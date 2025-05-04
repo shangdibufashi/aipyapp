@@ -1,0 +1,16 @@
+anthropic>=0.49.0
+beautifulsoup4>=4.13.3
+dynaconf>=3.2.10
+google-api-python-client>=2.166.0
+openai>=1.68.2
+pandas>=2.2.3
+prompt-toolkit>=3.0.50
+pygments>=2.19.1
+requests>=2.32.3
+rich>=13.9.4
+seaborn>=0.13.2
+term-image>=0.7.2
+tomli-w>=1.2.0
+qrcode>=8.1
+loguru>=0.7.3
+wxpython

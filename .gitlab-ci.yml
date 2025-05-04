@@ -1,0 +1,64 @@
+variables:
+  PROJECT_NAME: $CI_PROJECT_NAME
+  NEED_WATCH_DEPLOY: N
+
+docker-win10:
+  stage: build
+  variables:
+    PYTHONUTF8: "1"
+  rules:
+    - if: '$CI_COMMIT_TITLE =~ /.*\[win10\].*/'
+      when: always
+  tags:
+    - win10
+  script:
+    - $VERSION = "${env:CI_PIPELINE_ID}"
+    - Write-Host "VERSION=$VERSION"
+    - (Get-Content -path win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
+    - (Get-Content -path engine.py) -replace '__VERSION__', $VERSION | Set-Content -Path engine.py
+    - (Get-Content -path core/workers/workers.py) -replace 'handlers.factory', 'handlers.factory_engine' | Set-Content -Path core/workers/workers.py
+    - ./installer/packer_win10.ps1
+
+
+docker-mac:
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TITLE =~ /.*\[mac\].*/'
+      when: always
+  tags:
+    - macos
+  script:
+    - export build_platform=Darwin
+    - export PATH=$PATH:/usr/local/bin/
+    - export PYTHON_EXEC=/usr/local/bin/python3.10
+    - /usr/local/bin/python3.10 -m pip install -r installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple  --prefer-binary --user
+    - export VERSION="${CI_PIPELINE_ID}"
+    - echo "VERSION=$VERSION"
+    - ./installer/packer_macos.sh
+    - echo "packed aipyapp.app"
+    - pwd &&ls -alh aipyapp.app
+    - ./installer/packer_macos_installer.sh
+    - ls -alh ./macOS-x64/target
+
+
+docker-macm1:
+  # Official docker image.
+  stage: build
+  rules:
+    - if: '$CI_COMMIT_TITLE =~ /.*\[m1\].*/'
+      when: always
+  tags:
+    - macm1
+  script:
+    - export build_platform=DarwinM1
+    - export VERSION="${CI_PIPELINE_ID}"
+    - echo "VERSION=$VERSION"
+    - export PATH=$PATH:/opt/homebrew/bin/
+    - export PYTHON_EXEC=/opt/homebrew/bin/python3.10
+    - /opt/homebrew/bin/python3.10 -m pip install -r installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple  --prefer-binary --user
+    - ./installer/packer_macos.sh
+    - echo "packed aipyapp.app"
+    - pwd &&ls -alh aipyapp.app
+    - ./installer/packer_macos_installer.sh
+    - ls -alh ./macOS-x64/target
+
