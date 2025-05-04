@@ -126,7 +126,7 @@ jobs:
           \
           --follow-imports aipy.py
 
-          ls -alh aipyapp.dist/
+          ls -alh aipy.dist/
           du -h -d 2 aipy.dist/
 
       - name: Create installer
