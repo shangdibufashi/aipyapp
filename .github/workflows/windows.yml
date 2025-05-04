@@ -76,10 +76,11 @@ jobs:
       - name: build
         run: |
           set -ex
+          ls -alh 
           export VERSION="1.28.0"
           echo "VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
           
-          python -m nuitka \
+          "$Python_ROOT_DIR"/python.exe -m nuitka \
           --jobs=16 \
           --remove-output \
           --assume-yes-for-downloads \
@@ -125,6 +126,9 @@ jobs:
           --file-version=${VERSION} \
           \
           --follow-imports aipy.py
+
+          ls -alh aipyapp.dist/
+          du -h -d 2 aipyapp.dist/
 
       - name: Create installer
         shell: pwsh
