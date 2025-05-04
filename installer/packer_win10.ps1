@@ -11,7 +11,7 @@ $ScriptPath = $MyInvocation.MyCommand.Path
 
 # 获取当前脚本所在的目录
 $ScriptDir = Split-Path $ScriptPath -Parent
-$SrcDir = $ScriptDir + "/../aipyapp"
+$SrcDir = $ScriptDir + "/../"
 # 改变工作目录到脚本所在目录
 Set-Location -Path $SrcDir
 
@@ -128,6 +128,7 @@ python -m nuitka `
 --macos-create-app-bundle `
 `
 --include-data-dir=./res=res `
+--include-data-dir=./python=C:\Python313_clean `
 `
 --macos-app-version=${VERSION} `
 --macos-signed-app-name='com.knownsec.aipyapp' `
