@@ -96,7 +96,6 @@ python -m nuitka `
 --remove-output `
 --assume-yes-for-downloads `
 --show-scons `
---disable-console `
 --windows-disable-console `
 --standalone  `
 --python-flag=no_site,no_docstrings,isolated `

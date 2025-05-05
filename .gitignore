@@ -15,3 +15,4 @@ aipython.toml
 work/
 python/
 *.dist/
+./*.iss
