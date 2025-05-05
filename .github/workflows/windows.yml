@@ -196,7 +196,7 @@ jobs:
           pwd
           ls -alh
           echo "Zipping artifact."
-          zip -R "%ARTIFACT_NAME%.zip" "./%ARTIFACT_NAME%"
+          zip -R "$ARTIFACT_NAME.zip" "./$ARTIFACT_NAME"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
