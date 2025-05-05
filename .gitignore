@@ -16,3 +16,5 @@ work/
 python/
 *.dist/
 ./*.iss
+*.exe
+*.zip
