@@ -125,11 +125,12 @@ python -m nuitka `
 --nofollow-import-to=nose `
 `
 --include-package=googleapiclient.discovery --include-package=google.oauth2 `
+--include-package=pygments `
+--include-package=pandas `
 --include-package=aipyapp `
 --include-package-data=aipyapp `
 --enable-plugin=matplotlib `
 --enable-plugin=numpy `
---enable-plugin=pandas  `
 `
 --company-name='knownsec.inc' `
 --product-name='knownsec' `

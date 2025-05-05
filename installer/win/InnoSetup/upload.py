@@ -83,7 +83,7 @@ def main(mode:str, commit:str):
         
     # Configuration
     src_name = "installer.exe"
-    file_name = f"engine-windows-installer-x64-{version}.exe"
+    file_name = f"aipy-x64-{version}.exe"
     print(f"file_name={file_name}")
     if not os.path.isfile(file_name):
         if not os.path.isfile(src_name):
