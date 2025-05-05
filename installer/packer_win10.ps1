@@ -126,7 +126,6 @@ python -m nuitka `
 `
 --include-package=googleapiclient.discovery --include-package=google.oauth2 `
 --include-package=pygments `
---include-package=seaborn `
 --include-package=term_image `
 --include-package=aipyapp `
 --include-package-data=aipyapp `

@@ -122,7 +122,6 @@ jobs:
           --nofollow-import-to=nose \
           \
           --include-package=googleapiclient.discovery --include-package=google.oauth2 \
-          --include-package=seaborn \
           --include-package=term_image \
           --include-package=pygments \
           --include-package=aipyapp \

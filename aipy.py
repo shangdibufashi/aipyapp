@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 config_dir = Path.home() / f".aipy_packages"
 config_dir.mkdir(parents=True, exist_ok=True)
-sys.path.insert(1, str(config_dir.resolve()))
+sys.path.insert(0, str(config_dir.resolve()))
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
 ext = '.exe' if sys.platform == 'win32' else ''
@@ -20,7 +20,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import googleapiclient as gg
 import bs4
 import requests
