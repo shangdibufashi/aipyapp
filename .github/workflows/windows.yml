@@ -72,12 +72,20 @@ jobs:
           "$Python_ROOT_DIR"/python.exe --version
           "$Python_ROOT_DIR"/python.exe -m pip install -r installer/requirements.txt
 
+          export VERSION="1.28.0"
+          echo "VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
+
+      - name: Prepare Inno Setup script
+        shell: pwsh
+        run: |
+          Write-Host "VERSION=$env:VERSION"
+          (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $env:VERSION | Set-Content -Path WindowsInnoSetup.iss
+          
       - name: build
         run: |
           set -ex
           ls -alh 
-          export VERSION="1.28.0"
-          echo "VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
+          echo "Version is '$VERSION'."
           
           "$Python_ROOT_DIR"/python.exe -m nuitka \
           --jobs=16 \
@@ -132,8 +140,8 @@ jobs:
       - name: Create installer
         shell: pwsh
         run: |
-          Write-Host "VERSION=$VERSION"
-          (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $VERSION | Set-Content -Path WindowsInnoSetup.iss
+          Write-Host "VERSION=$env:VERSION"
+          (Get-Content -path installer/win/InnoSetup/WindowsInnoSetup.iss) -replace '__VERSION__', $env:VERSION | Set-Content -Path WindowsInnoSetup.iss
           
           echo "Installing Inno Setup."
           choco install innosetup
