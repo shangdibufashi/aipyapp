@@ -18,6 +18,7 @@ on:
 
 env:
   publish_pre_dev_labels: '[]'
+  REF_NAME_FILTERED: 'master'
 
 jobs:
   win-build:
@@ -135,7 +136,6 @@ jobs:
           --follow-imports aipy.py
 
           ls -alh aipy.dist/
-          du -h -d 2 aipy.dist/
 
       - name: Create installer
         shell: pwsh
@@ -149,9 +149,19 @@ jobs:
           type "WindowsInnoSetup.iss"
           echo "Creating installer from script."
           iscc /F"installer" "WindowsInnoSetup.iss"
+          mkdir build
+          mv "installer.exe" "build/installer.exe"
+          ls -alh build/
 
+      - name: check size artifact
+        run: |
+          set -x
+          pwd
+          ls -alh
+          du -h -d 2 .
 
       - name: Prepare artifact name
+        working-directory: ./build
         run: |
           set -x
           pwd
@@ -173,11 +183,8 @@ jobs:
           echo "RT_VERSION=$VERSION" >> "$(cygpath -u $GITHUB_ENV)"
 
           echo "Renaming artifact."
-          mv './build/${{matrix.build_type}}' "./build/$ARTIFACT_NAME"
-          if [ -e './build/installer.exe' ]; then
-            echo "Renaming installer."
-            mv './build/installer.exe' "./build/$ARTIFACT_NAME.exe"
-          fi
+          mv installer.exe "$ARTIFACT_NAME.exe"
+          
 
       - name: Create ZIP archive
         working-directory: ./build

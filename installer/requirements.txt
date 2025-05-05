@@ -15,3 +15,5 @@ qrcode>=8.1
 loguru>=0.7.3
 wxpython
 nuitka
+term_image
+matplotlib

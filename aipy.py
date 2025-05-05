@@ -1,4 +1,6 @@
 # coding: utf-8
+
+# init dynamical pip package path
 import os
 import sys
 from pathlib import Path
@@ -11,11 +13,24 @@ ext = '.exe' if sys.platform == 'win32' else ''
 pythonexe = Path(pwd) / 'python' / f'python{ext}'
 if pythonexe.exists():
     os.environ['pythonexe'] = str(pythonexe)
-from loguru import logger
 
+# 强制引用
+# 预装的第三方模块有：`requests`、`numpy`、`pandas`、`matplotlib`、`seaborn`、`bs4`、`googleapiclient`。
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import googleapiclient as gg
+import bs4
+import requests
+
+from loguru import logger
 from aipyapp.gui.main import main as aipy_main
 from aipyapp.aipy.config import CONFIG_DIR
 
+
+# 日志配置
 logger.remove()
 logger.add(CONFIG_DIR / "aipyapp.log", format="{time:HH:mm:ss} | {level} | {message} | {extra}", level='INFO')
 

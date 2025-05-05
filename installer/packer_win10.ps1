@@ -40,8 +40,14 @@ if (Test-Path $folderPath) {
     Remove-Item $folderPath -Recurse -Force
 }
 Get-ChildItem -Path . -Filter *.exe | Remove-Item -Force
+
+
+################################# embedding python
 copy -r C:\Python313_clean .
 mv Python313_clean python
+#################################
+
+
 function Convert-Number {
     param (
         [string]$num
@@ -86,6 +92,7 @@ function Convert-Number {
 
 $CI_PIPELINE_ID = if ($null -eq $env:CI_PIPELINE_ID) { "111" } else { $env:CI_PIPELINE_ID }
 $VERSION = Convert-Number -num $CI_PIPELINE_ID
+$VERSION = if ($VERSION) { $VERSION } else { "1.0.1" }
 Write-Host "Version: $VERSION"
 # --onefile `
 # --onefile-tempdir-spec="{CACHE_DIR}/{PRODUCT}" `
@@ -117,16 +124,19 @@ python -m nuitka `
 --nofollow-import-to=nbformat `
 `
 --nofollow-import-to=numpydoc `
---nofollow-import-to=matplotlib `
---nofollow-import-to=pandas `
 `
 --nofollow-import-to=pytest `
 --noinclude-pytest-mode=nofollow `
 --noinclude-setuptools-mode=nofollow `
 --nofollow-import-to=nose `
 `
---include-data-dir=./aipyapp/res=./aipyapp/res `
+--include-package=googleapiclient.discovery --include-package=google.oauth2 `
+--include-package=aipyapp `
+--include-package-data=aipyapp `
 --include-data-dir=./python=./python `
+--enable-plugin=matplotlib `
+--enable-plugin=numpy `
+--enable-plugin=pandas  `
 `
 --company-name='knownsec.inc' `
 --product-name='knownsec' `
