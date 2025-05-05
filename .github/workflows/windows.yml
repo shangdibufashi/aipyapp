@@ -115,16 +115,18 @@ jobs:
           --nofollow-import-to=nbformat \
           \
           --nofollow-import-to=numpydoc \
-          --nofollow-import-to=matplotlib \
-          --nofollow-import-to=pandas \
           \
           --nofollow-import-to=pytest \
           --noinclude-pytest-mode=nofollow \
           --noinclude-setuptools-mode=nofollow \
           --nofollow-import-to=nose \
           \
-          --include-data-dir=./aipyapp/res=./aipyapp/res \
-          --include-data-dir=./python=./python \
+          --include-package=googleapiclient.discovery --include-package=google.oauth2 \
+          --include-package=aipyapp \
+          --include-package-data=aipyapp \
+          --enable-plugin=matplotlib \
+          --enable-plugin=numpy \
+          --enable-plugin=pandas  \
           \
           --company-name='knownsec.inc' \
           --product-name='knownsec' \
@@ -136,6 +138,7 @@ jobs:
           --follow-imports aipy.py
 
           ls -alh aipy.dist/
+          cp -rf ./python ./aipy.dist/python
 
       - name: Create installer
         shell: pwsh

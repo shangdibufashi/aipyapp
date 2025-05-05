@@ -23,7 +23,7 @@ Write-Host "Current Directory: $CDIR"
 $env:CLCACHE_DIR = "C:\ccache"
 $env:ENVIRON = "dev"
 $env:ENVIRON_LOG = "all"
-$env:PATH = "C:\Python313\;C:\Python313\Scripts\;" + $env:PATH
+$env:PATH = "C:\Python312\;C:\Python312\Scripts\;" + $env:PATH
 
 python -m pip install -r installer/requirements.txt -i https://mirrors.cloud.tencent.com/pypi/simple
 
@@ -31,21 +31,15 @@ python -m pip install -r installer/requirements.txt -i https://mirrors.cloud.ten
 Set-Location -Path $CDIR
 Write-Host "Current Directory: $CDIR"
 
-$folderPath = "aipyapp.onefile-build"
+$folderPath = "aipy.onefile-build"
 if (Test-Path $folderPath) {
     Remove-Item $folderPath -Recurse -Force
 }
-$folderPath = "aipyapp.dist"
+$folderPath = "aipy.dist"
 if (Test-Path $folderPath) {
     Remove-Item $folderPath -Recurse -Force
 }
 Get-ChildItem -Path . -Filter *.exe | Remove-Item -Force
-
-
-################################# embedding python
-copy -r C:\Python313_clean .
-mv Python313_clean python
-#################################
 
 
 function Convert-Number {
@@ -133,7 +127,6 @@ python -m nuitka `
 --include-package=googleapiclient.discovery --include-package=google.oauth2 `
 --include-package=aipyapp `
 --include-package-data=aipyapp `
---include-data-dir=./python=./python `
 --enable-plugin=matplotlib `
 --enable-plugin=numpy `
 --enable-plugin=pandas  `
@@ -146,6 +139,11 @@ python -m nuitka `
 --file-version=${VERSION} `
 `
 --follow-imports aipy.py
+
+################################# embedding python
+copy -r C:\Python312_clean .
+mv Python312_clean aipy.dist\python
+#################################
 
 #  使用Chocolatey包管理器安装Inno Setup
 #  choco install innosetup
