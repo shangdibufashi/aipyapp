@@ -151,7 +151,6 @@ jobs:
           iscc /F"installer" "WindowsInnoSetup.iss"
           mkdir build
           mv "installer.exe" "build/installer.exe"
-          ls -alh build/
 
       - name: check size artifact
         run: |
