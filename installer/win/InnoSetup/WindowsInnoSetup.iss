@@ -1,16 +1,16 @@
 [Setup]
-AppId=aipyapp
-AppName=aipyapp
+AppId=aipy
+AppName=aipy
 AppVersion=__VERSION__
-AppPublisher=aipyapp
-AppPublisherURL=http://www.aipyapp.com/
-AppSupportURL=http://www.aipyapp.com/
-AppUpdatesURL=http://www.aipyapp.com/
-DefaultDirName={commonpf}\aipyapp
-DefaultGroupName=aipyapp
+AppPublisher=aipy
+AppPublisherURL=http://www.aipy.com/
+AppSupportURL=http://www.aipy.com/
+AppUpdatesURL=http://www.aipy.com/
+DefaultDirName={commonpf}\aipy
+DefaultGroupName=aipy
 AllowNoIcons=yes
 OutputDir=./
-OutputBaseFilename=aipyapp_x64
+OutputBaseFilename=aipy_x64
 SetupIconFile=aipyapp/res/aipy.ico
 WizardImageFile=./installer/win/InnoSetup/installerStrip.bmp
 Compression=lzma
@@ -30,10 +30,10 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 Source: "aipy.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\aipyapp"; Filename: "{app}\aipy.exe"
-Name: "{group}\{cm:UninstallProgram,aipyapp}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\aipyapp"; Filename: "{app}\aipy.exe"; Tasks: desktopicon and commoninstall
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\aipyapp"; Filename: "{app}\aipy.exe"; Tasks: quicklaunchicon
+Name: "{group}\aipy"; Filename: "{app}\aipy.exe"
+Name: "{group}\{cm:UninstallProgram,aipy}"; Filename: "{uninstallexe}"
+Name: "{commondesktop}\aipy"; Filename: "{app}\aipy.exe"; Tasks: desktopicon and commoninstall
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\aipy"; Filename: "{app}\aipy.exe"; Tasks: quicklaunchicon
 
 [Run]
 Filename: "{app}\aipy.exe"; Description: "start now"; Flags: nowait postinstall skipifsilent
