@@ -123,6 +123,7 @@ jobs:
           \
           --include-package=googleapiclient.discovery --include-package=google.oauth2 \
           --include-package=pandas \
+          --include-package=term_image \
           --include-package=pygments \
           --include-package=aipyapp \
           --include-package-data=aipyapp \
