@@ -6,7 +6,12 @@ import sys
 from pathlib import Path
 config_dir = Path.home() / f".aipy_packages"
 config_dir.mkdir(parents=True, exist_ok=True)
-sys.path.insert(0, str(config_dir.resolve()))
+pos=int(os.environ.get('PATH_POS', -1))
+if pos < 0:
+    sys.path.append(str(config_dir.resolve()))
+else:
+    sys.path.insert(pos, str(config_dir.resolve()))
+print(f'sys.path={sys.path}')
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
 ext = '.exe' if sys.platform == 'win32' else ''
