@@ -30,13 +30,13 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 Source: "aipy.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\aipyapp"; Filename: "{app}\aipyapp.exe"
+Name: "{group}\aipyapp"; Filename: "{app}\aipy.exe"
 Name: "{group}\{cm:UninstallProgram,aipyapp}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\aipyapp"; Filename: "{app}\aipy.exe"; Tasks: desktopicon and commoninstall
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\aipyapp"; Filename: "{app}\aipy.exe"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\aipyapp.exe"; Description: "start now"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\aipy.exe"; Description: "start now"; Flags: nowait postinstall skipifsilent
 
 [Code]
 function IsElevatedUser(): Boolean;
