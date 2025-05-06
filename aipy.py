@@ -15,10 +15,25 @@ else:
 print(f'sys.path={sys.path}')
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
-ext = 'python\\python.exe' if sys.platform == 'win32' else 'python/bin/python3'
+ext = 'python\\python.exe' if sys.platform == 'win32' else 'pythoncli/bin/python3'
 pythonexe = Path(pwd) / ext
 if pythonexe.exists():
     os.environ['pythonexe'] = str(pythonexe)
+
+import os
+import platform
+
+def get_documents_path():
+    system = platform.system()
+    home = os.path.expanduser("~")
+    if system == "Darwin" or system == "Linux":
+        return os.path.join(home, "Documents")
+    elif system == "Windows":
+        return os.path.join(home, "Documents")  # 或调整为 Windows 特有逻辑
+    else:
+        raise OSError("Unsupported operating system")
+
+os.environ['documents_path'] = str(get_documents_path())
 
 # 强制引用
 # 预装的第三方模块有：`requests`、`numpy`、`pandas`、`matplotlib`、`seaborn`、`bs4`、`googleapiclient`。
@@ -79,7 +94,10 @@ def env_pkg_debug(args):
     print(f"pip package: {str(config_dir.resolve())}")
     print(f"paths: {sys.path}")
     print('pythonexe', os.environ.get('pythonexe', ''))
+    print('documents_path', os.environ.get('documents_path', ''))
     print('pip_packages', os.environ.get('pip_packages', ''))
+    assert os.path.isfile(os.environ.get('pythonexe', '')), f'pythonexe not found: {os.environ.get("pythonexe", "")}'
+    assert os.path.isdir(os.environ.get('pip_packages', '')), f'pip_packages not found: {os.environ.get("pip_packages", "")}'
     cmd = [
         os.environ.get('pythonexe', ''),
         '-m',

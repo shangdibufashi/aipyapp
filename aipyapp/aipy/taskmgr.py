@@ -33,7 +33,17 @@ class TaskManager:
         plugin_dir = CONFIG_DIR / 'plugins'
         self.plugin_manager = PluginManager(plugin_dir)
         self.plugin_manager.load_plugins()
-        if settings.workdir:
+
+        # for macos
+        documents_path = os.environ.get('documents_path', None)
+        if documents_path:
+            documents_path = Path(documents_path)
+            workdir = documents_path / settings.workdir
+            workdir.mkdir(parents=True, exist_ok=True)
+            os.chdir(workdir)
+            self._cwd = workdir
+
+        elif settings.workdir:
             workdir = Path.cwd() / settings.workdir
             workdir.mkdir(parents=True, exist_ok=True)
             os.chdir(workdir)

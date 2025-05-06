@@ -61,6 +61,7 @@ export CCFLAGS='-Wl,-S'
 # https://www.python.org/ftp/python/3.9.12/python-3.9.12-macosx10.9.pkg
 # https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg
 
+rm -rf aipy.app
 
 $PYTHON_EXEC -m nuitka \
 --jobs=16 \
@@ -117,5 +118,7 @@ $PYTHON_EXEC -m nuitka \
 --file-version=${VERSION} \
 \
 --follow-imports aipy.py
+
+rsync -av python aipy.app/Contents/MacOS/pythoncli
 
 # rm -rf ~/Downloads/engine.app &&  mv -f engine.app ~/Downloads/
