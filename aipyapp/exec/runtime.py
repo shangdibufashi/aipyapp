@@ -32,7 +32,7 @@ class BaseRuntime(ABC):
             self.log.info(f'ensure_packages {" ".join(cmd)}')
             subprocess.check_call(
                 cmd,
-                creationflags=subprocess.CREATE_NO_WINDOW,  # no console window popup
+                # creationflags=subprocess.CREATE_NO_WINDOW,  # no console window popup
             )
             self.packages.update(packages)
             return True
