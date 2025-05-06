@@ -15,6 +15,34 @@ class BaseRuntime(ABC):
     def setenv(self, name, value, desc):
         self.envs[name] = (value, desc)
 
+    def ensure_custom_packages(self, pip_packages, *packages):
+        if not packages:
+            return True
+        packages = list(set(packages) - self.packages)
+        if not packages:
+            return True
+        executable = os.environ.get('pythonexe', sys.executable)
+        cmd = [executable, "-m", "pip", "install"]
+        cmd.append("--target")
+        cmd.append(pip_packages)
+        cmd.append("-i")
+        cmd.append("https://mirrors.cloud.tencent.com/pypi/simple")
+        cmd.extend(packages)
+        try:
+            self.log.info(f'ensure_packages {" ".join(cmd)}')
+            subprocess.check_call(
+                cmd,
+                creationflags=subprocess.CREATE_NO_WINDOW,  # no console window popup
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            self.packages.update(packages)
+            return True
+        except subprocess.CalledProcessError:
+            self.log.error("依赖安装失败: {}", " ".join(packages))
+        return False
+
+    
     def ensure_packages(self, *packages, upgrade=False, quiet=True):
         if not packages:
             return True
@@ -22,20 +50,19 @@ class BaseRuntime(ABC):
         packages = list(set(packages) - self.packages)
         if not packages:
             return True
-        executable = os.environ.get('pythonexe', sys.executable)
-        cmd = [executable, "-m", "pip", "install"]
+        
+        pip_packages = os.environ.get('pip_packages', None)
+        if pip_packages:
+            return self.ensure_custom_packages(pip_packages, *packages)
+
+        cmd = [sys.executable, "-m", "pip", "install"]
         if upgrade:
             cmd.append("--upgrade")
         if quiet:
             cmd.append("-q")
-        pip_packages = os.environ.get('pip_packages', None)
-        if pip_packages:
-            cmd.append("--target")
-            cmd.append(pip_packages)
         cmd.extend(packages)
 
         try:
-            self.log.info(f'ensure_packages {" ".join(cmd)}')
             subprocess.check_call(cmd)
             self.packages.update(packages)
             return True

@@ -198,7 +198,12 @@ class Task(Stoppable):
                 break
         self.print_summary()
         self.auto_save()
-        os.write(1, b'\a\a\a')
+        try:
+            # handle error below:
+            # OSError: [Errno 9] Bad file descriptor
+            os.write(1, b'\a\a\a')
+        except OSError:
+            pass
         self.log.info('Task done')
         
     def chat(self, prompt, system_prompt=None, name=None):
