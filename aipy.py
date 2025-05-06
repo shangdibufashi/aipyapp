@@ -32,6 +32,7 @@ import requests
 from loguru import logger
 from aipyapp.gui.main import main as aipy_main
 from aipyapp.aipy.config import CONFIG_DIR
+import aipyapp.impt as imm
 
 
 # 日志配置
