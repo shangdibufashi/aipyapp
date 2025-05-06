@@ -4,6 +4,7 @@
 import os
 import sys
 from pathlib import Path
+
 config_dir = Path.home() / f".aipy_packages"
 config_dir.mkdir(parents=True, exist_ok=True)
 pos=int(os.environ.get('PATH_POS', -1))
@@ -14,8 +15,8 @@ else:
 print(f'sys.path={sys.path}')
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
-ext = '.exe' if sys.platform == 'win32' else ''
-pythonexe = Path(pwd) / 'python' / f'python{ext}'
+ext = 'python\\python.exe' if sys.platform == 'win32' else 'python/bin/python3'
+pythonexe = Path(pwd) / ext
 if pythonexe.exists():
     os.environ['pythonexe'] = str(pythonexe)
 
@@ -32,8 +33,10 @@ import requests
 from loguru import logger
 from aipyapp.gui.main import main as aipy_main
 from aipyapp.aipy.config import CONFIG_DIR
-import aipyapp.impt as imm
-
+if sys.platform == 'win32':
+    import aipyapp.impt as imm
+else:
+    import aipyapp.impt_mac as imm
 
 # 日志配置
 logger.remove()
@@ -65,13 +68,14 @@ def parse_args():
     parser.add_argument('-p', '--python', default=False, action='store_true', help="Python mode")
     parser.add_argument('-g', '--gui', default=False, action='store_true', help="GUI mode")
     parser.add_argument('--debug', default=False, action='store_true', help="Debug mode")
+    parser.add_argument('--init', default=False, action='store_true', help="Init pip packages")
     parser.add_argument('-f', '--fetch-config', default=False, action='store_true', help="login to trustoken and fetch token config")
     parser.add_argument('cmd', nargs='?', default=None, help="Task to execute, e.g. 'Who are you?'")
     args = parser.parse_args()
     logger.level(args.level)
     return args
 
-def env_pkg_debug():
+def env_pkg_debug(args):
     print(f"pip package: {str(config_dir.resolve())}")
     print(f"paths: {sys.path}")
     print('pythonexe', os.environ.get('pythonexe', ''))
@@ -85,6 +89,8 @@ def env_pkg_debug():
         '--target',
         os.environ.get('pip_packages', ''),
         'tqdm', 
+        '-i',
+        'https://mirrors.cloud.tencent.com/pypi/simple',
     ]
     
     import subprocess
@@ -92,6 +98,13 @@ def env_pkg_debug():
     cp = subprocess.run(cmd)
     assert cp.returncode == 0
     from tqdm import tqdm
+    print('tqdm installed')
+
+    from aipyapp.aipy.runtime import Runtime
+    br = Runtime(settings={'auto_install':'', 'auto_getenv':''})
+    br.ensure_packages('seaborn')
+    print('seaborn installed')
+
 
 def mainw():
     args = parse_args()
@@ -99,7 +112,7 @@ def mainw():
         sys.stdout = Logger()
         sys.stderr = Logger()
     else:
-        env_pkg_debug()
+        env_pkg_debug(args)
     aipy_main(args)
 
 if __name__ == '__main__':

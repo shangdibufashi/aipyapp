@@ -4,16 +4,9 @@
 # How to run codesign for an app compiled by Nuitka on macOS?
 # https://github.com/Nuitka/Nuitka/issues/1511
 # --experimental=macos-sign-runtime
-PYTHON_EXEC=${PYTHON_EXEC:-python3.10}
+PYTHON_EXEC=${PYTHON_EXEC:-python3.13}
 set -ex
 pwd
-BN='./core/workers/matting/build_numba.sh'
-if [ ! -f "$BN" ]; then
-    echo "file not found: $BN"
-    exit 1
-fi
-$BN
-ls -alh ./core/workers/matting/ | grep so
 function convert_number() {
     num="$1"
     len=${#num}
@@ -55,6 +48,7 @@ function convert_number() {
 
 CI_PIPELINE_ID="${CI_PIPELINE_ID:-111}"
 VERSION=`convert_number ${CI_PIPELINE_ID}`
+VERSION="1.27.3"
 echo "Version: ${VERSION}"
 
 ################################################################ installer
@@ -74,16 +68,11 @@ $PYTHON_EXEC -m nuitka \
 --remove-output \
 --assume-yes-for-downloads \
 --show-scons \
---disable-console \
---windows-disable-console \
 --standalone  \
 --python-flag=no_site,no_docstrings,isolated \
---macos-app-icon=assets/logo.png \
+--macos-app-icon=aipyapp/res/aipy.ico \
 --include-package="certifi"  \
 --include-package="PIL"  \
---include-package="websockets"  \
---include-package="glfw"  \
---include-package="pyairaw"  \
 --show-progress \
 \
 --nofollow-import-to=astropy \
@@ -99,8 +88,6 @@ $PYTHON_EXEC -m nuitka \
 --nofollow-import-to=nbformat \
 \
 --nofollow-import-to=numpydoc \
---nofollow-import-to=matplotlib \
---nofollow-import-to=pandas \
 \
 --nofollow-import-to=pytest \
 --noinclude-pytest-mode=nofollow \
@@ -108,20 +95,27 @@ $PYTHON_EXEC -m nuitka \
 --nofollow-import-to=nose \
 --macos-create-app-bundle \
 \
---include-data-dir=./assets=assets \
+--include-package=googleapiclient.discovery \
+--include-package=google.oauth2 \
+--include-package=pygments \
+--include-package=term_image \
+--include-package=aipyapp \
+--include-package-data=aipyapp \
+--enable-plugin=matplotlib \
+--enable-plugin=numpy \
 \
 --macos-app-version=${VERSION} \
 --macos-signed-app-name='com.qianyueai.engine' \
 --macos-app-name=engine \
 --macos-app-mode=gui \
 \
---company-name='Feiyan.inc' \
---product-name='Feiyan' \
---copyright='Copyright 2023 Feiyan' \
---trademarks='Feiyan' \
+--company-name='knownsec.inc' \
+--product-name='knownsec' \
+--copyright='Copyright 2025 knownsec' \
+--trademarks='knownsec' \
 --product-version=${VERSION} \
 --file-version=${VERSION} \
 \
---follow-imports engine.py
+--follow-imports aipy.py
 
 # rm -rf ~/Downloads/engine.app &&  mv -f engine.app ~/Downloads/

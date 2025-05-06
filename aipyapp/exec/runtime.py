@@ -27,7 +27,8 @@ class BaseRuntime(ABC):
         cmd.append(pip_packages)
         cmd.extend(packages)
         cmd.append("-i")
-        cmd.append("https://mirrors.cloud.tencent.com/pypi/simple")
+        # cmd.append("https://mirrors.cloud.tencent.com/pypi/simple")
+        cmd.append("https://pypi.tuna.tsinghua.edu.cn/simple")
         try:
             self.log.info(f'ensure_packages {" ".join(cmd)}')
             subprocess.check_call(
