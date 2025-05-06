@@ -17,9 +17,10 @@ Compression=lzma
 SolidCompression=yes
 ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-PrivilegesRequired=none
+PrivilegesRequired=admin
 
-
+[Dirs]
+Name: "{app}"; Permissions: users-modify
 
 [Tasks]
 Name: "commoninstall"; Description: "Anyone who uses this computer (Multi-User Install)"; GroupDescription: "Install RawTherapee for:"; Flags: exclusive; Check: IsElevatedUser

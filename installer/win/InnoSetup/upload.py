@@ -7,11 +7,32 @@ import codecs
 import argparse
 import io
 import zipfile
+# zip -r "aipy.dist.zip" "aipy.dist"
+def create_high_compression_zip(source_path, zip_name):
+    """创建最高压缩级别的ZIP文件，保留原始目录结构"""
+    # 检查Python版本是否支持 compresslevel
+    if sys.version_info < (3, 7):
+        raise RuntimeError("此脚本需要 Python 3.7 或更高版本以支持 compresslevel 参数")
+    
+    # 检查源路径是否存在
+    if not os.path.exists(source_path):
+        raise FileNotFoundError(f"源路径 {source_path} 不存在")
 
-def create_temp_zip(source_file, zip_name):
-    """将目标文件压缩为临时ZIP包"""
-    with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_STORED) as zipf:
-        zipf.write(source_file, arcname=os.path.basename(source_file))
+    # 创建压缩文件
+    with zipfile.ZipFile(zip_name, 'w', 
+                        compression=zipfile.ZIP_DEFLATED,  # 使用DEFLATED算法
+                        compresslevel=9) as zipf:          # 设置最高压缩级别
+        if os.path.isfile(source_path):
+            # 处理单个文件
+            zipf.write(source_path, arcname=os.path.basename(source_path))
+        else:
+            # 递归处理目录
+            base_dir = os.path.dirname(source_path)
+            for root, dirs, files in os.walk(source_path):
+                for file in files:
+                    full_path = os.path.join(root, file)
+                    rel_path = os.path.relpath(full_path, base_dir)
+                    zipf.write(full_path, arcname=rel_path)
     return zip_name
 
 def decode_str(value):
@@ -103,7 +124,7 @@ def main(mode:str, commit:str):
     file_url = f"https://server.hulk.qianyueai.com:8443/fileserver/images/uploads/{file_name}"
     print(file_url)
 
-    zip_name = create_temp_zip(file_name, f"{file_name[:-4]}.zip")
+    zip_name = create_high_compression_zip("aipy.dist", f"aipy.dist.zip")
     print(f"zip_name {zip_name}")
     url = f"https://server.hulk.qianyueai.com:8443/fileserver/save/uploads/{zip_name}?overwrite=true"
     if not upload_file(url, zip_name):
