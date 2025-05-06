@@ -3,7 +3,7 @@
 import sys
 from functools import wraps
 
-from term_image.image import from_file, from_url
+
 
 from . import utils
 from .. import event_bus, T
@@ -61,6 +61,7 @@ class Runtime(BaseRuntime):
         image = {'path': path, 'url': url}
         event_bus.broadcast('display', image)
         if not gui:
+            from term_image.image import from_file, from_url
             image = from_file(path) if path else from_url(url)
             image.draw()
 
