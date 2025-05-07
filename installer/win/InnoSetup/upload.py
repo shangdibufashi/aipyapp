@@ -178,6 +178,7 @@ def mode_env():
     commit=commit['title']
     print(f"commit={commit}")
     main(mode, commit)
-    
+
+# curl -F photo=@aipy_installer_x86_64.dmg 'https://server.hulk.qianyueai.com:8443/fileserver/save/uploads/aipy_installer_x86_64.dmg?overwrite=true' --insecure
 if __name__ == '__main__':
     mode_param()

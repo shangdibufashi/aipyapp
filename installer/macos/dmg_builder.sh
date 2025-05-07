@@ -1,11 +1,11 @@
 #!/bin/bash
 # 一键生成 DMG 安装包脚本（依赖 create-dmg）
-# 适用场景：macOS 系统，需提前安装 Homebrew 和 Xcode 命令行工具
 set -xe
 CWD=`dirname $0`
 # 参数配置（按需修改）
+arch=$(uname -m)
 APP_NAME="aipy"                 # 应用名称（与.app文件名一致）
-DMG_NAME="aipy_installer"       # 输出 DMG 文件名
+DMG_NAME="aipy_installer_${arch}"       # 输出 DMG 文件名
 VOLUME_NAME="AIPY Installer"    # DMG 挂载卷标名称
 BACKGROUND_IMG="background.png" # 背景图片路径（建议尺寸 600x400）
 ICNS_FILE="installer/macos/aipy.icns"          # 原始图标文件（需1024x1024尺寸）
