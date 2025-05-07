@@ -46,3 +46,4 @@ rm -rf temp
 echo "✅ DMG 文件已生成：$DMG_NAME.dmg"
 
 codesign --force --deep --sign "Developer ID Application: Hongwei Liu" $DMG_NAME.dmg
+codesign -dvvv $DMG_NAME.dmg

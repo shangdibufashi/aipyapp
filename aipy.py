@@ -15,10 +15,9 @@ else:
 print(f'sys.path={sys.path}')
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
-ext = 'python\\python.exe' if sys.platform == 'win32' else 'pythoncli/bin/python3'
-pythonexe = Path(pwd) / ext
-if pythonexe.exists():
-    os.environ['pythonexe'] = str(pythonexe)
+pythonexe = f'{pwd}\\python\\python.exe' if sys.platform == 'win32' else f'{pwd}/pythoncli/bin/python3'
+assert os.path.isfile(pythonexe), f'pythonexe not found: {pythonexe}'
+os.environ['pythonexe'] = pythonexe
 
 import os
 import platform

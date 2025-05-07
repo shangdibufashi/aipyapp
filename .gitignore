@@ -21,3 +21,4 @@ python/
 *_clean/
 *.app/
 *.dmg
+pythoncli

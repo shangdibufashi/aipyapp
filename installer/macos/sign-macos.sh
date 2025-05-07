@@ -3,6 +3,7 @@
 #Configuration Variables and Parameters
 
 #Parameters
+CWD=`dirname $0`
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 TARGET_DIRECTORY="$SCRIPTPATH/target"
 PRODUCT=${1}
@@ -76,7 +77,7 @@ log_info "Installer generating process started."
 
 function signApp(){
     APP_PATH="./aipy.app"
-    ENTITLEMENTS_PATH="installer/entitlements.plist"
+    ENTITLEMENTS_PATH="$CWD/entitlements.plist"
 
     find "${APP_PATH}" -path '*.framework/Versions/A/*' -type f -perm +111 | while read -r EXECUTABLE
     do
@@ -85,9 +86,9 @@ function signApp(){
             "${EXECUTABLE}"
     done
 
-    codesign --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
-        --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \
-        "./aipy.app/Contents/MacOS/PySide6/Qt/lib/QtWebEngineCore.framework/Helpers/QtWebEngineProcess.app"
+    # codesign --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
+    #     --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \
+    #     "./aipy.app/Contents/MacOS/PySide6/Qt/lib/QtWebEngineCore.framework/Helpers/QtWebEngineProcess.app"
 
     codesign --deep --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
         --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \
@@ -101,4 +102,4 @@ signApp
 
 # create dmg
 log_info "Creating dmg file"
-
+codesign -dvvv  aipy.app  
