@@ -116,6 +116,6 @@ $PYTHON_EXEC -m nuitka \
 \
 --follow-imports aipy.py
 
-rsync -a python aipy.app/Contents/MacOS/pythoncli
+# rsync -a python aipy.app/Contents/MacOS/pythoncli
 
 # rm -rf ~/Downloads/aipy.app &&  mv -f aipy.app ~/Downloads/

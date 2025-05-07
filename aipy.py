@@ -15,8 +15,8 @@ else:
 print(f'sys.path={sys.path}')
 os.environ['pip_packages'] = str(config_dir.resolve())
 pwd = os.path.dirname((os.path.abspath(__file__)))
+print(f'pwd={pwd}')
 pythonexe = f'{pwd}\\python\\python.exe' if sys.platform == 'win32' else f'{pwd}/pythoncli/bin/python3'
-assert os.path.isfile(pythonexe), f'pythonexe not found: {pythonexe}'
 os.environ['pythonexe'] = pythonexe
 
 import os
@@ -124,6 +124,8 @@ def env_pkg_debug(args):
 
 
 def mainw():
+    if not os.path.isfile(pythonexe):
+        print(f'[ERROR] pythonexe not found: {pythonexe}')
     args = parse_args()
     if not args.debug:
         sys.stdout = Logger()

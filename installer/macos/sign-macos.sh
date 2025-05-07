@@ -79,12 +79,12 @@ function signApp(){
     APP_PATH="./aipy.app"
     ENTITLEMENTS_PATH="$CWD/entitlements.plist"
 
-    find "${APP_PATH}" -path '*.framework/Versions/A/*' -type f -perm +111 | while read -r EXECUTABLE
-    do
-        codesign --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
-            --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \
-            "${EXECUTABLE}"
-    done
+    # find "${APP_PATH}" -path '*.framework/Versions/A/*' -type f -perm +111 | while read -r EXECUTABLE
+    # do
+    #     codesign --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
+    #         --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \
+    #         "${EXECUTABLE}"
+    # done
 
     # codesign --force --entitlements "${ENTITLEMENTS_PATH}" --verify --verbose \
     #     --sign "Developer ID Application: ${APPLE_DEVELOPER_CERTIFICATE_ID}" --timestamp --options=runtime \

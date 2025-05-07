@@ -17,11 +17,12 @@ if ! command -v create-dmg &> /dev/null; then
 fi
 
 # 清理临时目录
-rm -rf ./$DMG_NAME.dmg ./temp
+rm -rf ./$DMG_NAME.dmg
 
 # 创建临时目录结构
 mkdir -p temp/.background
-rsync -a $APP_NAME.app temp/
+mv $APP_NAME.app temp/
+codesign --verify --verbose=4 --deep  temp/$APP_NAME.app
 # cp $BACKGROUND_IMG temp/.background/
 cp $ICNS_FILE temp/.VolumeIcon.icns
 
@@ -41,9 +42,10 @@ create-dmg \
     "temp/"
 
 # 清理临时文件
-rm -rf temp
+# rm -rf temp
 
 echo "✅ DMG 文件已生成：$DMG_NAME.dmg"
 
 codesign --force --deep --sign "Developer ID Application: Hongwei Liu" $DMG_NAME.dmg
 codesign -dvvv $DMG_NAME.dmg
+codesign --verify --verbose=4 --deep  $DMG_NAME.dmg
