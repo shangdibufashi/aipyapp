@@ -20,3 +20,4 @@ python/
 *.zip
 *_clean/
 *.app/
+aipy_installer.dmg
