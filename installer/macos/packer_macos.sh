@@ -51,9 +51,6 @@ VERSION=`convert_number ${CI_PIPELINE_ID}`
 VERSION="1.27.3"
 echo "Version: ${VERSION}"
 
-################################################################ installer
-# https://github.com/KosalaHerath/macos-installer-builder
-# https://medium.com/swlh/the-easiest-way-to-build-macos-installer-for-your-application-34a11dd08744
 
 # https://www.python.org/downloads/macos/
 export CCFLAGS='-Wl,-S'
@@ -106,8 +103,8 @@ $PYTHON_EXEC -m nuitka \
 --enable-plugin=numpy \
 \
 --macos-app-version=${VERSION} \
---macos-signed-app-name='com.qianyueai.engine' \
---macos-app-name=engine \
+--macos-signed-app-name='com.knownsec.aipy' \
+--macos-app-name=aipy \
 --macos-app-mode=gui \
 \
 --company-name='knownsec.inc' \
@@ -121,4 +118,4 @@ $PYTHON_EXEC -m nuitka \
 
 rsync -av python aipy.app/Contents/MacOS/pythoncli
 
-# rm -rf ~/Downloads/engine.app &&  mv -f engine.app ~/Downloads/
+# rm -rf ~/Downloads/aipy.app &&  mv -f aipy.app ~/Downloads/

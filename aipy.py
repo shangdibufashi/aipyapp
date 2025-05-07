@@ -49,9 +49,9 @@ from loguru import logger
 from aipyapp.gui.main import main as aipy_main
 from aipyapp.aipy.config import CONFIG_DIR
 if sys.platform == 'win32':
-    import aipyapp.impt as imm
+    import installer.impt as imm
 else:
-    import aipyapp.impt_mac as imm
+    import installer.impt_mac as imm
 
 # 日志配置
 logger.remove()
